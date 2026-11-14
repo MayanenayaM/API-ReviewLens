@@ -53,7 +53,11 @@ public class Review {
     @Column(nullable = false, length = 20)
     private StatusProcessamento status;
 
+    @Column(name = "tentativas", nullable = false, columnDefinition = "integer default 0")
+    private int tentativas;
+
     @CreationTimestamp
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
+
 }

@@ -23,14 +23,17 @@ public class ReviewController {
 
     private final ReviewService service;
 
+
     @PostMapping
     public ResponseEntity<ReviewResponse> criar(@Valid @RequestBody ReviewRequest request) {
         Review review = service.registrar(request);
 
-        HttpStatus status = review.getStatus() == StatusProcessamento.PROCESSADO
-                ? HttpStatus.CREATED
-                : HttpStatus.ACCEPTED;
+        HttpStatus status = review.getStatus() == StatusProcessamento.PENDENTE
+                ? HttpStatus.ACCEPTED
+                : HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(ReviewResponse.from(review));
     }
+
+    
 }

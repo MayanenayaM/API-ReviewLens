@@ -1,23 +1,16 @@
 package com.delivery.reviewlens_api.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.delivery.reviewlens_api.dto.Classificacao;
+import com.delivery.reviewlens_api.dto.ResultadoClassificacao;
 import com.delivery.reviewlens_api.dto.ReviewRequest;
-import com.delivery.reviewlens_api.dto.ReviewResponse;
 import com.delivery.reviewlens_api.exception.DuplicidadeException;
 import com.delivery.reviewlens_api.exception.TextoInvalidoException;
 import com.delivery.reviewlens_api.model.Review;
 import com.delivery.reviewlens_api.model.StatusProcessamento;
 import com.delivery.reviewlens_api.repository.ReviewRepository;
-import com.delivery.reviewlens_api.model.StatusProcessamento;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,10 +21,9 @@ public class ReviewService {
 
     private final ReviewRepository repository;
     private final TextoSanitizer sanitizer;
-    private final GeminiService geminiService;
+    private final ClassificadorService classificador;
 
     public Review registrar(ReviewRequest request) {
-
         String textoSanitizado = sanitizer.sanitizar(request.texto());
 
         if (textoSanitizado.length() < TAMANHO_MINIMO) {
@@ -44,14 +36,15 @@ public class ReviewService {
                     "Já existe uma avaliação cadastrada para o pedido " + request.idPedido() + ".");
         }
 
-        Classificacao classificacao = geminiService.classificar(textoSanitizado);
+        ResultadoClassificacao resultado = classificador.classificar(textoSanitizado);
 
         Review review = Review.builder()
                 .idPedido(request.idPedido())
-                .texto(request.texto())                   
-                .sentimento(classificacao.sentimento())
-                .topico(classificacao.topico())
-                .status(StatusProcessamento.PROCESSADO)
+                .texto(request.texto())
+                .sentimento(resultado.sentimento())
+                .topico(resultado.topico())
+                .status(resultado.status())
+                .tentativas(resultado.status() == StatusProcessamento.PENDENTE ? 1 : 0)
                 .build();
 
         try {
