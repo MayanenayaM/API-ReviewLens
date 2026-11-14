@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReviewLens | Painel de avaliações</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca">
+      <h1>ReviewLens</h1>
+      <p>Painel de sentimento das avaliações de delivery</p>
+    </div>
+    <button id="btn-atualizar" type="button">Atualizar</button>
+  </header>
+
+  <main>
+    <div id="mensagem" class="mensagem" role="status" hidden></div>
+    <div id="alerta" class="alerta" role="alert" hidden></div>
+
+    <section class="cartoes">
+      <article class="cartao">
+        <span class="rotulo">Avaliações analisadas</span>
+        <strong id="total">–</strong>
+        <small>Somente avaliações já classificadas com sucesso</small>
+      </article>
+
+      <article class="cartao" id="cartao-entrega">
+        <span class="rotulo">Entregas com avaliação negativa no mês</span>
+        <strong id="entrega-percentual">–</strong>
+        <small id="entrega-detalhe">&nbsp;</small>
+      </article>
+    </section>
+
+    <section class="graficos">
+      <article class="painel">
+        <div class="painel-topo">
+          <div>
+            <h2>Sentimentos</h2>
+            <p class="subtitulo">Como os clientes se sentem</p>
+          </div>
+          <div class="icone-painel" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" x2="9.01" y1="9" y2="9"/>
+              <line x1="15" x2="15.01" y1="9" y2="9"/>
+            </svg>
+          </div>
+        </div>
+        <div class="area-grafico">
+          <canvas id="grafico-sentimentos" role="img" aria-label="Gráfico de pizza com a quantidade de avaliações por sentimento"></canvas>
+        </div>
+      </article>
+
+      <article class="painel">
+        <div class="painel-topo">
+          <div>
+            <h2>Tópicos mais mencionados</h2>
+            <p class="subtitulo">Assuntos recorrentes nas avaliações</p>
+          </div>
+          <div class="icone-painel" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/>
+              <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>
+            </svg>
+          </div>
+        </div>
+
+        <ul id="lista-topicos" class="lista-topicos"></ul>
+
+        <p id="legenda-alerta" class="legenda-alerta" hidden>
+          Barra vermelha: mais de 50% das avaliações de Entrega neste mês são negativas.
+        </p>
+      </article>
+    </section>
+
+    <p id="atualizado" class="rodape"></p>
+  </main>
+
+  <script src="js/vendor/chart.umd.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
