@@ -4,7 +4,7 @@ API de análise de sentimento de avaliações de delivery, com dashboard.
 
 Clientes de restaurantes geram milhares de avaliações em texto, e lê-las uma a uma é inviável. O ReviewLens recebe cada avaliação, usa o **Google Gemini** para extrair o **sentimento** e o **tópico** abordado, guarda tudo de forma estruturada e mostra o resultado em um painel que indica, por exemplo, se o problema atual é o tempo de entrega ou a temperatura da comida.
 
-![Dashboard](reviewlens-api/docs/dashboard.png)
+![Dashboard](\API-ReviewLens\reviewlens-api\docs\dashboard.png)
 
 ---
 
