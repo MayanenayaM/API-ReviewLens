@@ -108,7 +108,7 @@ Abra `http://localhost:8080`.
 | Propriedade | Padrão | Descrição |
 |---|---|---|
 | `gemini.api.model` | `gemini-3.5-flash` | Modelo do Gemini. Os nomes mudam com frequência, confira a documentação |
-| `gemini.api.timeout-segundos` | `10` | Tempo máximo de espera pelo Gemini |
+| `gemini.api.timeout-segundos` | `30` | Tempo máximo de espera pelo Gemini |
 | `reviewlens.reprocessamento.intervalo-ms` | `60000` | Intervalo do job de reprocessamento |
 | `reviewlens.reprocessamento.tamanho-lote` | `20` | Avaliações reprocessadas por ciclo |
 | `reviewlens.reprocessamento.max-tentativas` | `5` | Tentativas antes de marcar como `ERRO` |
