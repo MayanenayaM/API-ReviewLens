@@ -4,7 +4,7 @@ API de análise de sentimento de avaliações de delivery, com dashboard.
 
 > Transforma milhares de avaliações de clientes em um painel que mostra, em segundos, o que está dando errado no delivery.
 
-![Dashboard](docs\dashboard.png)
+![Dashboard](docs/dashboard.png)
 
 ---
 
