@@ -2,7 +2,7 @@
 
 API de análise de sentimento de avaliações de delivery, com dashboard.
 
-Clientes de restaurantes geram milhares de avaliações em texto, e lê-las uma a uma é inviável. O ReviewLens recebe cada avaliação, usa o **Google Gemini** para extrair o **sentimento** e o **tópico** abordado, guarda tudo de forma estruturada e mostra o resultado em um painel que indica, por exemplo, se o problema atual é o tempo de entrega ou a temperatura da comida.
+> Transforma milhares de avaliações de clientes em um painel que mostra, em segundos, o que está dando errado no delivery.
 
 ![Dashboard](reviewlens-api\docs\dashboard.png)
 
@@ -11,15 +11,27 @@ Clientes de restaurantes geram milhares de avaliações em texto, e lê-las uma 
 ## Storytelling 
 
 ### 1. O Problema
-Restaurantes e operações de delivery lidam diariamente com um volume massivo de avaliações textuais de clientes. O principal desafio de **negócio** era a impossibilidade de ler e categorizar manualmente esse volume a tempo de corrigir falhas operacionais críticas (como comida fria ou atrasos). Do ponto de vista **técnico**, o desafio era construir uma integração robusta com uma IA externa (Google Gemini) capaz de processar dados sem travar a aplicação, garantindo que instabilidades ou falhas de rede da API não gerassem perda de dados ou erros 500 para o usuário final.
+Um restaurante de delivery recebe milhares de avaliações em texto todos os dias. Ler e classificar cada uma à mão é impossível, e o resultado é que a gestão acaba reagindo ao comentário mais recente ou mais irritado, em vez de enxergar o padrão. A pergunta que realmente importa ("o problema agora é o tempo de entrega ou a temperatura da comida?") fica sem resposta, ou chega tarde demais.
 
 ### 2. A Solução
-Para resolver isso, escolhi **Java com Spring Boot** pela sua maturidade corporativa, tipagem estática e facilidade na construção de arquiteturas em camadas bem definidas. O **PostgreSQL** foi adotado para garantir consistência relacional e controle de duplicidade por pedido. A arquitetura foi desenhada com foco em resiliência: caso a IA falhe ou demore a responder, o sistema utiliza um mecanismo de *fallback* e um job assíncrono agendado (`@Scheduled`) para reprocessar os dados de forma transparente, mantendo a estabilidade do sistema.
+Em vez de treinar um modelo próprio, usei um LLM (Google Gemini) como classificador e concentrei o esforço de engenharia no que fica ao redor dele. A API recebe a avaliação, a IA devolve sentimento e tópico em um JSON restrito a valores pré-definidos, e tudo é guardado de forma estruturada para virar gráfico. Como uma IA pode errar o formato ou ficar fora do ar, tratei o Gemini como uma dependência que pode falhar, e não como algo infalível: a regra de fallback fica em um único ponto do código (`ClassificadorService`).
+
+| Escolha | Por quê |
+|---|---|
+| Java + Spring Boot | Arquitetura em camadas (MVC) com injeção de dependências, validação, tratamento global de erros e agendamento de tarefas já integrados |
+| Google Gemini | Classifica texto em português sem eu precisar treinar um modelo, e aceita um schema que força a resposta a usar só os valores permitidos |
+| PostgreSQL | Agregações (`GROUP BY`) para as estatísticas e restrição de unicidade que impede avaliações duplicadas do mesmo pedido |
+| JavaScript puro + Chart.js | Painel leve, servido pelo próprio Spring: um só processo, sem etapa de build e sem CORS |
 
 ### 3. O Resultado
-O projeto entregou uma API REST totalmente funcional que automatiza 100% da triagem de *feedback*, convertendo texto livre em métricas estruturadas de sentimento e tópicos de negócio. Como resultado prático, o sistema alcançou alta resiliência (com tratamento de exceções customizado e reprocessamento automático de falhas), um dashboard interativo em JavaScript puro que sinaliza criticidade operacional (mudando a cor do gráfico de entregas para vermelho quando os problemas superam 50%), além de uma suíte completa de testes automatizados (unitários e de integração).
+**O que o projeto entrega hoje:**
 
----
+- Uma avaliação enviada ao `POST /api/reviews` volta, na própria resposta, com sentimento e tópico, e já entra nos gráficos do painel.
+- O alerta de entrega é automático: quando mais de 50% das avaliações de entrega do mês são negativas, a barra de Entrega fica vermelha e a gestão vê o problema sem ler nenhum comentário.
+- Nenhuma avaliação se perde: com o Gemini fora do ar, a API responde `202`, guarda a avaliação como `PENDENTE` e um job a classifica sozinho quando o serviço volta. Validei derrubando o Gemini de propósito.
+- As 10 regras de negócio estão implementadas e rastreáveis até a classe responsável (veja a [tabela de regras](#regras-de-negócio)).
+- **[N]** testes automatizados, mais um script de teste ponta a ponta, cobrem validação, sanitização, fallback, reprocessamento e o cálculo do alerta.
+- Tempo de resposta do `POST` de cerca de **[X] segundos**, já incluindo a chamada ao Gemini.
 
 ## Funcionalidades
 
