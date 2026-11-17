@@ -207,4 +207,4 @@ powershell -ExecutionPolicy Bypass -File .\scripts\teste-e2e.ps1
 - Execução em contêiner (Docker).
 
 ## Autoria
-Desenvolvido por Mayane Lins. (https://github.com/MayanenayaM/API-ReviewLens.git)
+Desenvolvido por Mayane Lins. (https://github.com/MayanenayaM)
