@@ -30,8 +30,7 @@ Em vez de treinar um modelo próprio, usei um LLM (Google Gemini) como classific
 - O alerta de entrega é automático: quando mais de 50% das avaliações de entrega do mês são negativas, a barra de Entrega fica vermelha e a gestão vê o problema sem ler nenhum comentário.
 - Nenhuma avaliação se perde: com o Gemini fora do ar, a API responde `202`, guarda a avaliação como `PENDENTE` e um job a classifica sozinho quando o serviço volta. Validei derrubando o Gemini de propósito.
 - As 10 regras de negócio estão implementadas e rastreáveis até a classe responsável (veja a [tabela de regras](#regras-de-negócio)).
-- **[N]** testes automatizados, mais um script de teste ponta a ponta, cobrem validação, sanitização, fallback, reprocessamento e o cálculo do alerta.
-- Tempo de resposta do `POST` de cerca de **[X] segundos**, já incluindo a chamada ao Gemini.
+- 40 testes automatizados, mais um script de teste ponta a ponta, cobrem validação, sanitização, fallback, reprocessamento e o cálculo do alerta.
 
 ## Funcionalidades
 
@@ -208,4 +207,4 @@ powershell -ExecutionPolicy Bypass -File .\scripts\teste-e2e.ps1
 - Execução em contêiner (Docker).
 
 ## Autoria
-Desenvolvido por Mayane Lins. [link do repositório]
+Desenvolvido por Mayane Lins. (https://github.com/MayanenayaM/API-ReviewLens.git)
